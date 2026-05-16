@@ -4,7 +4,7 @@
  *  TEL AVIV TRADING FLOOR — design tokens
  *  Editorial-financial dark theme. No purple gradients here.
  * ───────────────────────────────────────────────────────────── */
-
+ 
 :root {
   /* Ink (background ladder) — pulls slightly warm toward parchment */
   --ink-0:   #07090e;   /* deepest void */
