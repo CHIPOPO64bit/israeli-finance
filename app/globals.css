@@ -1,26 +1,261 @@
 @import "tailwindcss";
 
+/* ─────────────────────────────────────────────────────────────
+ *  TEL AVIV TRADING FLOOR — design tokens
+ *  Editorial-financial dark theme. No purple gradients here.
+ * ───────────────────────────────────────────────────────────── */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Ink (background ladder) — pulls slightly warm toward parchment */
+  --ink-0:   #07090e;   /* deepest void */
+  --ink-1:   #0b0f17;   /* page base */
+  --ink-2:   #11161f;   /* card */
+  --ink-3:   #1a212c;   /* card hover */
+  --ink-4:   #232b38;   /* divider */
+  --ink-5:   #2e3645;   /* heavy border */
+
+  /* Type colors */
+  --bone:        #f0ead6;  /* parchment off-white */
+  --bone-dim:    #cdc6b0;
+  --bone-faint:  #8b8676;
+  --muted:       #6b7280;
+  --muted-low:   #424a59;
+
+  /* Accents — earned, not loud */
+  --amber:       #d4a574;  /* editorial gold, primary accent */
+  --amber-bright:#e9b87b;
+  --signal:      #4d8ffd;  /* signal blue, action */
+  --gain:        #5ce1c0;  /* oxidized green */
+  --loss:        #ff7e6b;  /* faded coral */
+  --highlight:   #fbbf24;  /* numbers-of-note */
+
+  /* Israeli-flag-inspired hairline accent */
+  --flag-blue:   #0038b8;
+
+  /* Type ramp */
+  --font-display: var(--font-fraunces), "Fraunces", ui-serif, Georgia, serif;
+  --font-sans:    var(--font-geist), "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    var(--font-mono-jb), "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-heb:     var(--font-heb), "Frank Ruhl Libre", "Heebo", ui-serif, serif;
+
+  /* Motion */
+  --ease-out: cubic-bezier(.16,1,.3,1);
+  --ease-in:  cubic-bezier(.7,0,.84,0);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ink-0: var(--ink-0);
+  --color-ink-1: var(--ink-1);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-ink-4: var(--ink-4);
+  --color-ink-5: var(--ink-5);
+  --color-bone: var(--bone);
+  --color-bone-dim: var(--bone-dim);
+  --color-bone-faint: var(--bone-faint);
+  --color-muted: var(--muted);
+  --color-amber: var(--amber);
+  --color-amber-bright: var(--amber-bright);
+  --color-signal: var(--signal);
+  --color-gain: var(--gain);
+  --color-loss: var(--loss);
+  --color-highlight: var(--highlight);
+  --color-flag-blue: var(--flag-blue);
+
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-heb: var(--font-heb);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html, body {
+  background: var(--ink-1);
+  color: var(--bone);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "ss02", "cv11";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--amber);
+  color: var(--ink-0);
+}
+
+/* ── Atmosphere: grain + faint grid + radial dusk ──────────────── */
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(212,165,116,0.10), transparent 60%),
+    radial-gradient(900px 700px at 5% 110%, rgba(77,143,253,0.07), transparent 60%);
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.10;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.85  0 0 0 0 0.78  0 0 0 0 0.55  0 0 0 1 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size: 180px;
+}
+
+/* ── Typography utilities ───────────────────────────────────── */
+
+.font-display { font-family: var(--font-display); font-feature-settings: "ss01", "ss03"; letter-spacing: -0.02em; }
+.font-mono    { font-family: var(--font-mono); font-feature-settings: "tnum", "ss01"; }
+.font-heb     { font-family: var(--font-heb); }
+
+.numeric {
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum", "zero", "ss01";
+  letter-spacing: -0.01em;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 11px;
+  color: var(--bone-faint);
+}
+
+.headline-serif {
+  font-family: var(--font-display);
+  font-weight: 320;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+}
+
+/* ── Composition primitives ─────────────────────────────────── */
+
+.hairline { border-color: var(--ink-4); }
+.hairline-strong { border-color: var(--ink-5); }
+
+.card {
+  background: linear-gradient(180deg, var(--ink-2) 0%, color-mix(in oklch, var(--ink-2), var(--ink-1) 50%) 100%);
+  border: 1px solid var(--ink-4);
+  border-radius: 0; /* sharp by default; opt-in to rounded */
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 4px 10px 3px;
+  border: 1px solid var(--ink-4);
+  background: rgba(20,24,31,0.6);
+  color: var(--bone-dim);
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────── */
+
+* { scrollbar-width: thin; scrollbar-color: var(--ink-5) transparent; }
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: var(--ink-5); border-radius: 0; }
+*::-webkit-scrollbar-thumb:hover { background: var(--bone-faint); }
+
+/* ── Page-load reveal animations ────────────────────────────── */
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes width-in {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0.15; }
+}
+
+.rise   { animation: rise-in .65s var(--ease-out) both; }
+.fade   { animation: fade-in .6s var(--ease-out) both; }
+.live-dot { display: inline-block; width: 7px; height: 7px; background: var(--gain); border-radius: 50%; animation: blink 1.6s steps(1) infinite; }
+
+.shimmer {
+  background: linear-gradient(90deg, transparent, rgba(240,234,214,0.06), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2.4s linear infinite;
+}
+
+/* ── Ticker bar (marquee) ───────────────────────────────────── */
+
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.ticker-track {
+  display: inline-flex;
+  gap: 3rem;
+  animation: ticker 90s linear infinite;
+  white-space: nowrap;
+}
+
+/* ── Underline link style ───────────────────────────────────── */
+
+a.underline-thread {
+  position: relative;
+  text-decoration: none;
+}
+a.underline-thread::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -2px;
+  height: 1px;
+  background: currentColor;
+  transform-origin: right;
+  transform: scaleX(0);
+  transition: transform .35s var(--ease-out);
+}
+a.underline-thread:hover::after { transform-origin: left; transform: scaleX(1); }
+
+/* ── Direction toggle hooks ─────────────────────────────────── */
+
+[dir="rtl"] .ltr-only { display: none; }
+[dir="ltr"] .rtl-only { display: none; }
+
+/* ── Recharts in-theme overrides ────────────────────────────── */
+
+.recharts-cartesian-axis-tick-value,
+.recharts-text {
+  fill: var(--bone-faint);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+}
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: var(--ink-4);
+}
+.recharts-default-tooltip {
+  background: var(--ink-2) !important;
+  border: 1px solid var(--ink-5) !important;
+  border-radius: 0 !important;
+  font-family: var(--font-mono) !important;
 }

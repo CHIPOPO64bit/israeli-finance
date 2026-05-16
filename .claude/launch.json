@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "borsa",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3137,
+      "cwd": "/Users/davidkeisar/Documents/projects/israeli-finance"
+    }
+  ]
+}

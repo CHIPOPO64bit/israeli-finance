@@ -1,0 +1,50 @@
+name: Deploy BORSA to Cloudflare
+
+# Deploys live on every push to the `prod` branch. Keep `main` for daily work;
+# fast-forward `prod` to `main` when you're ready to ship. Or trigger manually
+# from the Actions tab via "Run workflow".
+on:
+  push:
+    branches: [prod]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: write
+
+jobs:
+  deploy:
+    name: Build & deploy → finance.yourdomain.com
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: Install
+        run: npm ci
+
+      - name: Type-check & build (Next.js)
+        run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+
+      - name: Build for Cloudflare (OpenNext)
+        run: npm run cf:build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+
+      - name: Deploy worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --config wrangler.toml
+          packageManager: npm

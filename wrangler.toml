@@ -1,0 +1,33 @@
+# Cloudflare Workers config for BORSA.
+#
+# Built by @opennextjs/cloudflare into .open-next/, then deployed to a Worker
+# that serves the Next.js app server + the static assets.
+name = "borsa"
+main = ".open-next/worker.js"
+compatibility_date = "2025-11-01"
+compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
+
+# Static assets emitted by OpenNext go through the Worker's ASSETS binding.
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+# Custom domain — Cloudflare auto-creates the DNS record + TLS cert on deploy.
+# Requires the zone (yourdomain.com) to live on the same Cloudflare account
+# as this worker and the API token to have Workers Routes + Zone permissions.
+[[routes]]
+pattern = "finance.yourdomain.com"
+custom_domain = true
+
+[observability]
+enabled = true
+
+[placement]
+mode = "smart"
+
+# Note on R2: we previously bound an R2 bucket for Next.js's incremental data
+# cache. The app uses `force-dynamic` rendering everywhere and runs its own
+# in-memory caches (lib/yahoo.ts, lib/sec.ts, lib/wikidata.ts), so R2 is
+# strictly optional. To enable it later: turn on R2 in the Cloudflare
+# dashboard (free tier), then re-add a `[[r2_buckets]]` block here and switch
+# `open-next.config.ts` back to `r2-incremental-cache`.
