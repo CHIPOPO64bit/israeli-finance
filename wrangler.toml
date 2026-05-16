@@ -16,7 +16,7 @@ binding = "ASSETS"
 # Requires the zone (yourdomain.com) to live on the same Cloudflare account
 # as this worker and the API token to have Workers Routes + Zone permissions.
 [[routes]]
-pattern = "finance.yourdomain.com"
+pattern = "finance.hyperbolic.center"
 custom_domain = true
 
 [observability]
