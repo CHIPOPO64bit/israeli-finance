@@ -86,16 +86,12 @@ async function HomeContent({ sector, limit, sort }: { sector: string; limit: num
                 ISSUE №01 · TEL AVIV
               </div>
               <h1 className="mt-4 font-display text-[clamp(48px,7.5vw,108px)] leading-[0.92] tracking-[-0.04em] text-[var(--bone)] rise">
-                The numbers,
-                <br />
-                <span className="italic font-[300]" style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100' }}>
-                  not the noise.
-                </span>
+                The numbers.
               </h1>
               <p className="mt-6 max-w-[600px] text-[16px] leading-relaxed text-[var(--bone-dim)] rise" style={{ animationDelay: '120ms' }}>
-                A working atlas of {total.toLocaleString()}&nbsp;Israeli public companies — pulled live
-                from the Tel Aviv Stock Exchange. Financials as filed, the people who run them, and the
-                primary disclosures. <span className="text-[var(--bone)]">No predictions. Only the books.</span>
+                {total.toLocaleString()}&nbsp;Israeli public companies, pulled live from the
+                Tel Aviv Stock Exchange. Financials as filed, the people who run them, and
+                links to the primary disclosures.
               </p>
             </div>
 
