@@ -12,6 +12,7 @@ import { CompanyCard } from '@/components/CompanyCard';
 import { Ticker } from '@/components/Ticker';
 import { FeaturedRail } from '@/components/FeaturedRail';
 import { SortToggle, type SortKey } from '@/components/SortToggle';
+import { MacroStrip } from '@/components/MacroStrip';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 300;
@@ -133,8 +134,13 @@ async function HomeContent({ sector, limit, sort }: { sector: string; limit: num
         </div>
       </section>
 
+      {/* Regime snapshot — compact macro strip, links to /macro */}
+      <Suspense fallback={null}>
+        <MacroStrip />
+      </Suspense>
+
       {/* Featured rails — researcher shortlists */}
-      <section className="mx-auto max-w-[1680px] px-6">
+      <section className="mx-auto max-w-[1680px] px-6 mt-8">
         <FeaturedRail picks={rails} />
       </section>
 

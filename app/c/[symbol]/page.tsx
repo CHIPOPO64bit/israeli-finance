@@ -23,6 +23,9 @@ import { XBRLFinancials } from '@/components/XBRLFinancials';
 import { SectionNav } from '@/components/SectionNav';
 import { GrowthAnalysis } from '@/components/GrowthAnalysis';
 import { FundamentalsPanel } from '@/components/FundamentalsPanel';
+import { VerdictPanel } from '@/components/VerdictPanel';
+import { SectorContextPanel } from '@/components/SectorContextPanel';
+import { deriveVerdict, sectorReadingGuide } from '@/lib/flags';
 import { WatchStar } from '@/components/WatchStar';
 import { WatchlistBar } from '@/components/WatchlistBar';
 
@@ -101,6 +104,44 @@ export default async function CompanyPage({ params }: { params: Params }) {
     technicalLeaders: makeup.technical,
   });
 
+  // Value-investor verdict (Ardan-style): PASS / WATCH / SKIP + flags
+  const isILA = (price.currency ?? '').toUpperCase() === 'ILA';
+  const marketCapUsd = price.marketCap != null
+    ? (isILA ? price.marketCap / 3.7 : price.marketCap)
+    : null;
+  // We can't fetch avgVolume from the snapshot directly — use price.regularMarketPrice
+  // and a derived avgVolume from summaryDetail if present.
+  const avgVol = (snap.stats?.sharesOutstanding != null && snap.stats?.floatShares != null)
+    ? null  // placeholder — we don't fetch avgVolume in quoteSummary modules
+    : null;
+  const verdict = deriveVerdict({
+    fund: fundamentals,
+    marketCap: price.marketCap,
+    marketCapUsd,
+    trailingPE: stats.trailingPE,
+    forwardPE: stats.forwardPE,
+    priceToBook: stats.priceToBook,
+    priceToSales,
+    profitMargins: stats.profitMargins,
+    debtToEquity: stats.debtToEquity,
+    totalCash: stats.totalCash,
+    totalDebt: stats.totalDebt,
+    freeCashflow: stats.freeCashflow,
+    avgVolume3M: avgVol,
+    price: price.regularMarketPrice,
+    currency: price.currency,
+    heldPercentInsiders: stats.heldPercentInsiders,
+    sector: company.sector,
+    industry: profile.industry,
+    companyName: company.englishName,
+    founded: company.founded,
+    isFounderLed: makeup.founders > 0,
+    technicalLeaders: makeup.technical,
+    hasSecFilings: !!cik,
+  });
+
+  const readingGuide = sectorReadingGuide(company.sector, profile.industry);
+
   const change = formatChange(price.regularMarketChangePercent);
   const changeColor =
     change.sign === 'up' ? 'text-[var(--gain)]' :
@@ -127,6 +168,7 @@ export default async function CompanyPage({ params }: { params: Params }) {
 
   const navItems = [
     { id: 'overview',     label: 'Overview' },
+    { id: 'verdict',      label: 'Verdict' },
     ...(hasGrowth ? [{ id: 'diamond', label: 'Diamond' }] : []),
     ...(hasGrowth ? [{ id: 'growth',  label: 'Growth' }] : []),
     { id: 'filings',      label: cik ? 'Filings' : 'Disclosures' },
@@ -271,9 +313,25 @@ export default async function CompanyPage({ params }: { params: Params }) {
         </div>
       </section>
 
+      {/* ── SECTOR READING GUIDE — how to read this company ──── */}
+      {readingGuide && (
+        <section id="sector-context" className="mx-auto max-w-[1680px] px-6 mt-12 scroll-mt-24">
+          <SectorContextPanel
+            guide={readingGuide}
+            sectorName={sec.en}
+            industry={profile.industry}
+          />
+        </section>
+      )}
+
+      {/* ── VALUE-INVESTOR VERDICT (Ardan-style) ────────────── */}
+      <section id="verdict" className="mx-auto max-w-[1680px] px-6 mt-12 scroll-mt-24">
+        <VerdictPanel v={verdict} />
+      </section>
+
       {/* ── DIAMOND SCOREBOARD ───────────────────────────────── */}
       {hasGrowth && (
-        <section id="diamond" className="mx-auto max-w-[1680px] px-6 mt-16 scroll-mt-24">
+        <section id="diamond" className="mx-auto max-w-[1680px] px-6 mt-12 scroll-mt-24">
           <FundamentalsPanel diamond={diamond} />
         </section>
       )}

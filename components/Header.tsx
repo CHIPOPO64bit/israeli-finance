@@ -39,6 +39,9 @@ export function Header() {
           >
             MAP ↗
           </a>
+          <Link href="/macro" className="underline-thread text-[var(--bone-dim)] hover:text-[var(--bone)] tracking-wide">
+            MACRO
+          </Link>
           <Link href="/#sectors" className="underline-thread text-[var(--bone-dim)] hover:text-[var(--bone)] tracking-wide">
             SECTORS
           </Link>

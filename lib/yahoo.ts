@@ -109,6 +109,11 @@ export type CompanySnapshot = {
     payoutRatio?: number | null;
     targetMeanPrice?: number | null;
     recommendationKey?: string | null;
+    // Ownership concentration — for Israeli market this matters a lot.
+    // Controlling shareholders > 50% mean minority equity holders are along for the ride.
+    heldPercentInsiders?: number | null;
+    heldPercentInstitutions?: number | null;
+    shortPercentOfFloat?: number | null;
   };
   officers: Officer[];
   history?: ChartPoint[];
@@ -360,6 +365,9 @@ export async function getCompanySnapshot(
         payoutRatio: pickNum(detail.payoutRatio),
         targetMeanPrice: pickNum(fin.targetMeanPrice),
         recommendationKey: typeof fin.recommendationKey === 'string' ? fin.recommendationKey : null,
+        heldPercentInsiders: pickNum(stats.heldPercentInsiders),
+        heldPercentInstitutions: pickNum(stats.heldPercentInstitutions),
+        shortPercentOfFloat: pickNum(stats.shortPercentOfFloat),
       },
       officers,
       history,
